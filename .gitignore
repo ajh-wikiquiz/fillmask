@@ -1,0 +1,10 @@
+.vscode/
+__pycache__/
+/.terraform/
+/venv/
+/app/ml_model/
+/fly.toml
+/.terraform.lock.hcl
+/fly.toml
+/terraform.tfvars
+/*terraform.tfstate*

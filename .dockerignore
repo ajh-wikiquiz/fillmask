@@ -1,0 +1,15 @@
+**/__pycache__/
+**/.vscode/
+**/ml_model/
+/.git/
+/notebook/
+/venv/
+/.dockerignore
+/.editorconfig
+/.gitignore
+/Dockerfile
+/fly.toml
+/Procfile
+/README.md
+/runtime.txt
+/*terraform*

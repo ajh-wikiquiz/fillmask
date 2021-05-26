@@ -1,0 +1,10 @@
+transformers
+onnxruntime
+fastapi
+graphene
+orjson
+uvicorn
+uvloop
+httptools
+gunicorn
+redis
