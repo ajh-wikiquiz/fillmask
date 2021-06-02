@@ -59,6 +59,26 @@ resource "heroku_build" "app" {
   depends_on = [heroku_addon.cache]
 }
 
+resource "heroku_config" "app" {
+    vars = {
+        CURRENT_RELEASE_ID = heroku_build.app.release_id
+    }
+
+    sensitive_vars = {
+    }
+
+  depends_on = [heroku_build.app]
+}
+
+resource "heroku_app_config_association" "app" {
+  app_id = heroku_app.app.id
+
+  vars = heroku_config.app.vars
+  sensitive_vars = heroku_config.app.sensitive_vars
+
+  depends_on = [heroku_config.app]
+}
+
 resource "heroku_formation" "app" {
   app      = var.app_name
   type     = "web"
@@ -66,6 +86,13 @@ resource "heroku_formation" "app" {
   size     = "Free"
 
   depends_on = [heroku_build.app]
+}
+
+resource "heroku_app_feature" "log_runtime_metrics" {
+  app  = var.app_name
+  name = "log-runtime-metrics"
+
+  depends_on = [heroku_formation.app]
 }
 
 output "app_url" {

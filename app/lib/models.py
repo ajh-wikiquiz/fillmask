@@ -4,10 +4,6 @@ from pydantic import BaseModel
 from typing import Optional, List, Union
 
 
-class Request(BaseModel):
-  text: str
-
-
 class FillMaskREST(BaseModel):
   text: str
   score: Union[float, None]
