@@ -34,13 +34,13 @@ async def fill_text(text: str, topn: int = 10):
 
 # GraphQL
 class Query(graphene.ObjectType):
-  fill_mask = graphene.List(
+  suggestions = graphene.List(
     graphene.List(FillMaskGraphQL),
     text=graphene.String(required=True),
     topn=graphene.Int(default_value=10),
   )
 
-  def resolve_fill_mask(parent, info, text, topn):
+  def resolve_suggestions(parent, info, text, topn):
     if text.count(MASK_STR) == 0:
       raise GraphQLError(message=f'{MASK_STR} must be present in the passed text.')
     return get_cache(fill_mask_onnx, text, topn)
