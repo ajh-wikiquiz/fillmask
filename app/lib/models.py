@@ -4,11 +4,16 @@ from pydantic import BaseModel
 from typing import Optional, List, Union
 
 
-class FillMaskREST(BaseModel):
+class RequestPOST(BaseModel):
+  text: str
+  topn: int = 10
+
+
+class FillMaskResponseREST(BaseModel):
   text: str
   score: Union[float, None]
 
 
-class FillMaskGraphQL(graphene.ObjectType):
+class FillMaskResponseGraphQL(graphene.ObjectType):
   text = graphene.String(required=True)
   score = graphene.Float()

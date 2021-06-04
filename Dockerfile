@@ -32,5 +32,5 @@ COPY --from=warmup /root/.cache/huggingface/transformers /root/.cache/huggingfac
 # Basically squashing the COPY commands in the final image
 FROM gcr.io/distroless/python3-debian10
 COPY --from=pre / /
-ENV GUNICORN_CMD_ARGS="--workers=2 --worker-class=uvicorn.workers.UvicornWorker"
+ENV GUNICORN_CMD_ARGS="--workers=1 --worker-class=uvicorn.workers.UvicornWorker"
 ENTRYPOINT ["/venv/bin/gunicorn", "app.main:app"]

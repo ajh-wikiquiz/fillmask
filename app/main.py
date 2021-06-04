@@ -1,6 +1,6 @@
 from app.lib.cache import cache, get_cache
 from app.lib.fillmask import fill_mask_onnx, MASK_STR
-from app.lib.models import FillMaskREST, FillMaskGraphQL
+from app.lib.models import RequestPOST, FillMaskResponseREST, FillMaskResponseGraphQL
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,18 +24,25 @@ app.add_middleware(
 
 
 # Routes
-@app.get('/fillmask', response_model=Dict[str, Dict[str, List[List[FillMaskREST]]]], response_class=ORJSONResponse)
-@app.get('/fillmask/{text}', response_model=Dict[str, Dict[str, List[List[FillMaskREST]]]], response_class=ORJSONResponse)
-async def fill_text(text: str, topn: int = 10):
+@app.get('/suggestions', response_model=Dict[str, Dict[str, List[List[FillMaskResponseREST]]]], response_class=ORJSONResponse)
+@app.get('/suggestions/{text}', response_model=Dict[str, Dict[str, List[List[FillMaskResponseREST]]]], response_class=ORJSONResponse)
+async def suggestions_get(text: str, topn: int = 10):
   if text.count(MASK_STR) == 0:
     raise HTTPException(status_code=400, detail=f'{MASK_STR} must be present in the passed text.')
   return {'data': {'suggestions': get_cache(fill_mask_onnx, text, topn)}}
 
 
+@app.post('/suggestions', response_model=Dict[str, Dict[str, List[List[FillMaskResponseREST]]]], response_class=ORJSONResponse)
+async def suggestions_post(request: RequestPOST):
+  if request.text.count(MASK_STR) == 0:
+    raise HTTPException(status_code=400, detail=f'{MASK_STR} must be present in the passed text.')
+  return {'data': {'suggestions': get_cache(fill_mask_onnx, request.text, request.topn)}}
+
+
 # GraphQL
 class Query(graphene.ObjectType):
   suggestions = graphene.List(
-    graphene.List(FillMaskGraphQL),
+    graphene.List(FillMaskResponseGraphQL),
     text=graphene.String(required=True),
     topn=graphene.Int(default_value=10),
   )
